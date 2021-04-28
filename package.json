@@ -1,0 +1,75 @@
+{
+  "name": "minerenderweb",
+  "version": "2.0.0",
+  "description": "",
+  "scripts": {
+    "web": "gulp --gulpfile gulpfile.web.js bundle",
+    "web:w": "gulp --gulpfile gulpfile.web.js bundle:w"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "three": "global:THREE",
+    "canvas": "global:canvas",
+    "minerender": "global:MineRender"
+  },
+  "author": "Haylee Schäfer",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InventivetalentDev/MineRender.git"
+  },
+  "homepage": "https://minerender.org",
+  "dependencies": {
+    "browser-or-node": "^1.3.0",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "canvas": "^2.6.1",
+    "debug": "^2.6.9",
+    "minerender": "../MineRender",
+    "onscreen": "^1.3.2",
+    "pako": "^2.0.3",
+    "prismarine-nbt": "^1.5.0",
+    "stats.js": "^0.17.0",
+    "three": "^0.126.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.1",
+    "@babel/preset-env": "^7.13.5",
+    "@mapbox/node-pre-gyp": "^1.0.0",
+    "@types/browser-or-node": "^1.3.0",
+    "@types/crypto-js": "^4.0.1",
+    "@types/debug": "^4.1.5",
+    "@types/md5": "^2.3.0",
+    "@types/node": "^14.14.31",
+    "@types/node-persist": "^3.1.1",
+    "@types/three": "^0.125.2",
+    "babel-loader": "^8.2.2",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "browserify-incremental": "^3.1.1",
+    "browserify-shim": "^3.8.14",
+    "clean-webpack-plugin": "^3.0.0",
+    "event-stream": "^4.0.1",
+    "glob": "^7.1.6",
+    "gulp": "^4.0.2",
+    "gulp-bro": "^2.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "progress-stream": "^2.0.0",
+    "ts-loader": "^8.0.17",
+    "ts-node": "^9.1.1",
+    "tsify": "^5.0.2",
+    "typescript": "^4.1.5",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0",
+    "watchify": "^4.0.0",
+    "webpack": "^5.23.0",
+    "webpack-cli": "^4.5.0",
+    "webpackbar": "^5.0.0-3"
+  }
+}

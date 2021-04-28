@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "sourceRoot": ".",
+    "baseUrl": ".",
+    "moduleResolution": "Node",
+    "module": "CommonJS",
+    "target": "ES2018",
+    "esModuleInterop": true
+  },
+  "include": ["."],
+  "exclude": [
+    "src",
+    "node_modules"
+  ]
+}
