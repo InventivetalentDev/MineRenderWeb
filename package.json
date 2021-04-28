@@ -14,7 +14,8 @@
   "browserify-shim": {
     "three": "global:THREE",
     "canvas": "global:canvas",
-    "minerender": "global:MineRender"
+    "minerender": "global:MineRender",
+    "three/examples/jsm/controls/OrbitControls": "global:three/examples/jsm/controls/OrbitControls"
   },
   "author": "Haylee Schäfer",
   "license": "MIT",

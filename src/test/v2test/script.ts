@@ -1,6 +1,10 @@
 import { Ticker } from "minerender";
 import { AssetKey, AssetLoader, BlockObject, BlockStates, Models, Renderer, SceneInspector } from "minerender";
 import { AxesHelper, GridHelper, Vector3 } from "three";
+import * as THREE from "three";
+import "three/examples/jsm/controls/OrbitControls";
+import { StructureParser } from "../../../../MineRender/lib/model/multiblock/StructureParser";
+
 
 console.log("hi")
 
@@ -121,6 +125,10 @@ createModel("item", "wooden_sword")
 
 AssetLoader.loadOrRetryWithDefaults(new AssetKey("minecraft", "end_city/ship", "structures",undefined,"data", ".nbt"), AssetLoader.NBT).then(asset=>{
     console.log(asset);
+    StructureParser.parse(asset).then(structure=>{
+        console.log(structure)
+    })
+
 })
 
 BlockStates.getList().then(blockList_ => {
@@ -332,8 +340,9 @@ renderer.scene.add(axesHelper);
 renderer.camera.position.set(20, 15, 20);
 renderer.camera.lookAt(new Vector3(0, 0, 0))
 
-// const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement);
-// controls.update();
+// @ts-ignore meh.
+const controls = new THREE.OrbitControls(renderer.camera, renderer.renderer.domElement);
+controls.update();
 
 const inspector = new SceneInspector(renderer);
 document.getElementById('rayinfo')!.append(inspector.objectInfoContainer);
