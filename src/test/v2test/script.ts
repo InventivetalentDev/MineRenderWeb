@@ -1,6 +1,6 @@
 import { Ticker } from "minerender";
 import { AssetKey, AssetLoader, BlockObject, BlockStates, Models, Renderer, SceneInspector } from "minerender";
-import { AxesHelper, GridHelper, Vector3 } from "three";
+import { AxesHelper, Euler, GridHelper, Vector3 } from "three";
 import * as THREE from "three";
 import "three/examples/jsm/controls/OrbitControls";
 import { StructureParser } from "../../../../MineRender/lib/model/multiblock/StructureParser";
@@ -50,6 +50,7 @@ const renderer = new Renderer({
     }
 });
 document.body.appendChild(renderer.renderer.domElement);
+window["renderer"] = renderer;
 
 setInterval(() => {
     info["renderCalls"] = renderer.renderer.info.render.calls;
@@ -102,7 +103,7 @@ function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
                     if (!obj.isInstanced) return;
                     for (let i = 0; i < instances; i++) {
                         let n = obj.nextInstance();
-                        n.setPosition(new Vector3(x,y,z))
+                        n.setPosition(new Vector3(x, y, z))
                         // obj.setPositionAt(n.index, new THREE.Vector3(16,64,16));
                         // obj.setRotationAt(n.index, new THREE.Euler(0,1.5708,0));
                         // incStat("instanceCount")
@@ -123,10 +124,32 @@ function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
 // })();
 createModel("item", "wooden_sword")
 
-AssetLoader.loadOrRetryWithDefaults(new AssetKey("minecraft", "end_city/ship", "structures",undefined,"data", ".nbt"), AssetLoader.NBT).then(asset=>{
+AssetLoader.loadOrRetryWithDefaults(new AssetKey("minecraft", "end_city/ship", "structures", undefined, "data", ".nbt"), AssetLoader.NBT).then(asset => {
     console.log(asset);
-    StructureParser.parse(asset).then(structure=>{
-        console.log(structure)
+    StructureParser.parse(asset).then(structure => {
+        console.log(structure);
+
+        const pos = new Vector3(0, 0, 0);
+        const rotation = new Euler(0, 0, 0);
+        const scale = new Vector3(1, 1, 1);
+        structure.blocks.forEach(block => {
+            console.log(block)
+            BlockStates.get(AssetKey.parse("blockstates", block.type)).then(blockState => {
+                if (blockState) {
+                    renderer.scene.addBlock(blockState, {
+                        mergeMeshes: true,
+                        instanceMeshes: true,
+                        wireframe: true,
+                        maxInstanceCount: 500
+                    }).then(blockObjectOrReference => {
+                        blockObjectOrReference.setPosition(pos.set(block.position[0] * 16, block.position[1] * 16, block.position[2] * 16));
+                        // blockObjectOrReference.setPositionRotationScale(pos.set(block.position[0] * 16, block.position[1] * 16, block.position[2] * 16), rotation, scale);
+                    })
+                } else {
+                    console.warn("missing blockstate for " + block.type);
+                }
+            })
+        })
     })
 
 })
@@ -405,5 +428,5 @@ function getRandomSpherePoint() {
     let x = r * sinPhi * cosTheta;
     let y = r * sinPhi * sinTheta;
     let z = r * cosPhi;
-    return {x: x, y: y, z: z};
+    return { x: x, y: y, z: z };
 }
