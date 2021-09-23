@@ -1,4 +1,4 @@
-import { Ticker } from "minerender";
+import { isBlockObject, Ticker } from "minerender";
 import { AssetKey, AssetLoader, BlockObject, BlockStates, Models, Renderer, SceneInspector } from "minerender";
 import { AxesHelper, Euler, GridHelper, Vector3 } from "three";
 import * as THREE from "three";
@@ -122,38 +122,48 @@ function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
 //     await createModel("block", "acacia_log", 1, 32, 32, 16)
 //     await createModel("block", "acacia_log", 1, 32, 32, 16)
 // })();
-createModel("item", "wooden_sword")
+// createModel("item", "wooden_sword")
 
-AssetLoader.loadOrRetryWithDefaults(new AssetKey("minecraft", "end_city/ship", "structures", undefined, "data", ".nbt"), AssetLoader.NBT).then(asset => {
+// const structureAsset = new AssetKey("minecraft", "end_city/ship", "structures", undefined, "data", ".nbt");
+// const structureAsset = new AssetKey("minecraft", "pillager_outpost/watchtower", "structures", undefined, "data", ".nbt");
+const structureAsset = new AssetKey(undefined, "world_test", undefined, undefined, undefined, ".nbt", "https://corsfiles.inventivetalent.dev")
+AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset => {
     console.log(asset);
-    StructureParser.parse(asset).then(structure => {
+    StructureParser.parse(asset).then(async structure => {
         console.log(structure);
 
         const pos = new Vector3(0, 0, 0);
         const rotation = new Euler(0, 0, 0);
         const scale = new Vector3(1, 1, 1);
-        structure.blocks.forEach(block => {
-            console.log(block)
-            BlockStates.get(AssetKey.parse("blockstates", block.type)).then(blockState => {
-                if (blockState) {
-                    renderer.scene.addBlock(blockState, {
-                        mergeMeshes: true,
-                        instanceMeshes: true,
-                        wireframe: true,
-                        maxInstanceCount: 500
-                    }).then(blockObjectOrReference => {
-                        blockObjectOrReference.setPosition(pos.set(block.position[0] * 16, block.position[1] * 16, block.position[2] * 16));
-                        // blockObjectOrReference.setPositionRotationScale(pos.set(block.position[0] * 16, block.position[1] * 16, block.position[2] * 16), rotation, scale);
-                    })
-                } else {
-                    console.warn("missing blockstate for " + block.type);
+        let i = 2;
+        for (let block of structure.blocks) {
+            // await sleep(1);
+            const blockState = await BlockStates.get(AssetKey.parse("blockstates", block.type));
+            console.log("state", blockState)
+            if (blockState) {
+                const blockObjectOrReference = await renderer.scene.addBlock(blockState, {
+                    mergeMeshes: true,
+                    instanceMeshes: true,
+                    wireframe: true,
+                    maxInstanceCount: 5000
+                });
+                console.log("ref", blockObjectOrReference)
+                if (isBlockObject(blockObjectOrReference)) {
+                    await blockObjectOrReference.setState(block.properties)
                 }
-            })
-        })
+                // await sleep(5);
+                console.log("move", blockObjectOrReference)
+                console.log(block)
+                blockObjectOrReference.setPosition(pos.set(block.position[0] * 16, block.position[1] * 16, block.position[2] * 16));
+            } else {
+                console.warn("missing blockstate for " + block.type);
+            }
+        }
     })
 
 })
 
+/*
 BlockStates.getList().then(blockList_ => {
     const blockList = [...blockList_];
     const a = 0;
@@ -176,6 +186,8 @@ BlockStates.getList().then(blockList_ => {
     }
     console.log(blockList)
 })
+
+ */
 
 // MineRender.Entities.getEntity(new MineRender.BasicAssetKey("minecraft", "armor_stand"), new MineRender.BasicAssetKey("minecraft","armorstand/wood")).then(model => {
 //     let obj = new MineRender.EntityObject(model, {
@@ -429,4 +441,12 @@ function getRandomSpherePoint() {
     let y = r * sinPhi * sinTheta;
     let z = r * cosPhi;
     return { x: x, y: y, z: z };
+}
+
+
+
+ async function sleep(timeout: number): Promise<void> {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(), timeout);
+    });
 }
