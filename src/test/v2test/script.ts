@@ -1,9 +1,9 @@
-import { isBlockObject, Ticker } from "minerender";
-import { AssetKey, AssetLoader, BlockObject, BlockStates, Models, Renderer, SceneInspector } from "minerender";
-import { AxesHelper, Euler, GridHelper, Vector3 } from "three";
+import { isBlockObject, ModelObject, StructureParser, Ticker } from "minerender";
+import { AssetKey, AssetLoader, BlockObject, BlockStates, Models, Renderer, SceneInspector, MineRenderWorld, BatchedExecutor } from "minerender";
+import { AmbientLight, AxesHelper, Euler, GridHelper, HemisphereLight, HemisphereLightHelper, PointLight, PointLightHelper, sRGBEncoding, Vector3 } from "three";
 import * as THREE from "three";
 import "three/examples/jsm/controls/OrbitControls";
-import { StructureParser } from "../../../../MineRender/lib/model/multiblock/StructureParser";
+import { JobQueue } from "jobqu";
 
 
 console.log("hi")
@@ -44,9 +44,17 @@ const start = Date.now();
 
 // const MineRender = require("../src");
 const renderer = new Renderer({
+    camera: {
+        near: 1,
+        far: 2000
+    },
     render: {
         stats: true,
-        fpsLimit: 0
+        fpsLimit: 60,
+        antialias: false
+    },
+    composer: {
+        enabled: true
     }
 });
 document.body.appendChild(renderer.renderer.domElement);
@@ -124,9 +132,66 @@ function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
 // })();
 // createModel("item", "wooden_sword")
 
-// const structureAsset = new AssetKey("minecraft", "end_city/ship", "structures", undefined, "data", ".nbt");
+const world = new MineRenderWorld(renderer.scene);
+window["world"] = world;
+console.log(world);
+/*
+for(let i=0;i<100;i++){
+    let x = Math.floor(Math.random()*50);
+    let y = Math.floor(Math.random()*50);
+    let z = Math.floor(Math.random()*50);
+
+    world.setBlockAt(x, y, z, {
+        type: "stone"
+    }).then(info=>{
+        console.log(info)
+    })
+
+}
+ */
+
+/*
+const executor = new BatchedExecutor(1, 50);
+
+world.setBlockAt(0, 0, 0, {
+    type: "stone"
+}).then(info => {
+    console.log(info)
+
+    setTimeout(() => {
+        for (let x = 0; x < 20; x++) {
+            for (let z = 0; z < 20; z++) {
+                for (let y = 0; y < 20; y++) {
+                    executor.submit(() => {
+                        world.setBlockAt(x, y, z, {
+                            type: "stone"
+                        }).then(info => {
+                            console.log(info)
+                        })
+                    })
+                }
+            }
+        }
+    }, 5000)
+})
+ */
+
+
+const structureAsset = new AssetKey("minecraft", "end_city/ship", "structures", undefined, "data", ".nbt");
 // const structureAsset = new AssetKey("minecraft", "pillager_outpost/watchtower", "structures", undefined, "data", ".nbt");
-const structureAsset = new AssetKey(undefined, "world_test", undefined, undefined, undefined, ".nbt", "https://corsfiles.inventivetalent.dev")
+// const structureAsset = new AssetKey(undefined, "all_blocks_16", undefined, undefined, undefined, ".nbt", "https://corsfiles.inventivetalent.dev")
+// const structureAsset = new AssetKey(undefined, "world_test", undefined, undefined, undefined, ".nbt", "https://corsfiles.inventivetalent.dev")
+
+AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset => {
+    console.log(asset);
+    return StructureParser.parse(asset).then(async structure => {
+        console.log(structure)
+        await world.placeMultiBlock(structure, true, new BatchedExecutor(1, 32));
+    });
+})
+    .catch(err => console.log(err));
+
+/*
 AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset => {
     console.log(asset);
     StructureParser.parse(asset).then(async structure => {
@@ -162,6 +227,9 @@ AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset 
     })
 
 })
+
+ */
+
 
 /*
 BlockStates.getList().then(blockList_ => {
@@ -242,35 +310,40 @@ BlockStates.getList().then(blockList_ => {
 //     }, c*5)
 // })
 
-// MineRender.Models.getMerged({
-//     assetType: "models",
-//     type: "block",
-//     path: "fire_side0",
-//     extension: ".json"
-// }).then(model => {
-//     const instanceCount = 10;
-//
-//     console.log(model)
-//     let obj = new MineRender.ModelObject(model, {
-//         mergeMeshes: true,
-//         instanceMeshes: true,
-//         wireframe: true,
-//         maxInstanceCount: instanceCount
-//     });
-//     renderer.scene.initAndAdd(obj);
-//     incStat("modelCount")
-//
-//     //TODO: add event for finished mesh loading or set isInstanced sooner
-//     setTimeout(() => {
-//         for (let i = 0; i < instanceCount; i++) {
-//             let n = obj.nextInstance();
-//             obj.setPositionAt(n.index, new THREE.Vector3(getRandomInt(-16, 16) * 16, getRandomInt(-16, 16) * 16, getRandomInt(-16, 16) * 16));
-//             incStat("instanceCount")
-//         }
-//     }, 2000);
-//
-//     console.log("Time to scene add: " + (Date.now() - start) + "ms");
-// });
+/*
+BlockStates.get(new AssetKey("minecraft", "magma_block", "blockstates", undefined, "assets", ".json")).then(blockState=>{
+    renderer.scene.addBlock(blockState).then(block=>{
+
+    })
+})
+
+ */
+
+/*
+Models.getMerged(new AssetKey("minecraft", "magma_block", "blocks", undefined, "assets", ".json")).then(model => {
+    const instanceCount = 10;
+
+    console.log(model)
+    let obj = new ModelObject(model, {
+        mergeMeshes: true,
+        instanceMeshes: true,
+        wireframe: true,
+        maxInstanceCount: instanceCount
+    });
+    renderer.scene.initAndAdd(obj);
+    incStat("modelCount")
+
+    //TODO: add event for finished mesh loading or set isInstanced sooner
+    setTimeout(() => {
+        for (let i = 0; i < instanceCount; i++) {
+            let n = obj.nextInstance();
+            n.setPosition(new THREE.Vector3(getRandomInt(-16, 16) * 16, getRandomInt(-16, 16) * 16, getRandomInt(-16, 16) * 16))
+        }
+    }, 2000);
+
+    console.log("Time to scene add: " + (Date.now() - start) + "ms");
+});
+ */
 
 // let skinObj = new MineRender.SkinObject();
 // skinObj.setSkinTexture("https://crafatar.com/skins/bcd2033c63ec4bf88aca680b22461340?overlay");
@@ -372,8 +445,59 @@ BlockStates.getList().then(blockList_ => {
 const axesHelper = new AxesHelper(64);
 renderer.scene.add(axesHelper);
 
-renderer.camera.position.set(20, 15, 20);
+renderer.camera.position.set(50, 35, 50);
 renderer.camera.lookAt(new Vector3(0, 0, 0))
+
+{
+    const hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.3 );
+    // hemiLight.color.setHSL( 0.6, 1, 0.6 );
+    // hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+    hemiLight.position.set( 0, 256*16, 0 );
+    renderer.scene.add( hemiLight );
+
+    const hemiLightHelper = new THREE.HemisphereLightHelper( hemiLight, 10 );
+    renderer.scene.add( hemiLightHelper );
+
+    //
+
+    const dirLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
+    // dirLight.color.setHSL( 0.1, 1, 0.95 );
+    dirLight.position.set( - 1, 2, -1 );
+    // dirLight.position.multiplyScalar( 30 );
+    renderer.scene.add( dirLight );
+
+    dirLight.castShadow = true;
+
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+
+    const d = 50;
+
+    dirLight.shadow.camera.left = - d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = - d;
+
+    dirLight.shadow.camera.far = 3500;
+    dirLight.shadow.bias = - 0.0001;
+
+    const dirLightHelper = new THREE.DirectionalLightHelper( dirLight, 10 );
+    renderer.scene.add( dirLightHelper );
+
+
+    const ambientLight = new AmbientLight(0xffffff, 0.5);
+    renderer.scene.add(ambientLight);
+
+    // const hemiLight = new HemisphereLight(0xffffff,0xffffff,0.8);
+    // hemiLight.position.set(0, 256, 0);
+    // renderer.scene.add(hemiLight);
+    // renderer.scene.add(new HemisphereLightHelper(hemiLight, 10,0xff0000));
+
+    // const pointLight = new PointLight(0xffffff, 0.8);
+    // pointLight.position.set(0, 50, 0);
+    // renderer.scene.add(pointLight)
+    // renderer.scene.add(new PointLightHelper(pointLight, 1))
+}
 
 // @ts-ignore meh.
 const controls = new THREE.OrbitControls(renderer.camera, renderer.renderer.domElement);
@@ -444,8 +568,7 @@ function getRandomSpherePoint() {
 }
 
 
-
- async function sleep(timeout: number): Promise<void> {
+async function sleep(timeout: number): Promise<void> {
     return new Promise(resolve => {
         setTimeout(() => resolve(), timeout);
     });
