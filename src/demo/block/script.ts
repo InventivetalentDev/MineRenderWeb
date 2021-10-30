@@ -33,7 +33,6 @@ sceneInspector.appendTo(document.getElementById('inspector'));
 let blockObject: BlockObject;
 
 setBlock("stone");
-loadGUI()
 
 function setBlock(block: string) {
     console.log("setting block to", block)
@@ -50,7 +49,7 @@ function setBlock(block: string) {
         blockObject = blockObject_ as BlockObject; //TODO
 
         // dummy intersection
-        const intersection: Intersection ={
+        const intersection: Intersection = {
             object: blockObject,
             distance: 0,
             point: new Vector3(),
@@ -62,27 +61,18 @@ function setBlock(block: string) {
 
 window["setBlock"] = setBlock;
 
-
-function loadGUI() {
-    const gui = new GUI()
-
-    {
-        const blockFolder = gui.addFolder("Block");
-        blockFolder.open();
-        {
-            const blockProps = {
-                state: "stone"
-            };
-
-            const stateControls = blockFolder.add(blockProps, 'state');
-            stateControls.onFinishChange(v=>{
-                setBlock(v);
-            })
-        }
-
-    }
-
-}
+const blockInput = document.getElementById("block-input") as HTMLInputElement;
+blockInput.addEventListener("change", () => {
+    setBlock(blockInput.value);
+});
+const blockSuggestions = document.getElementById("block-suggestions") as HTMLDataListElement;
+BlockStates.getList().then(list => {
+    list.forEach(l => {
+        const option = document.createElement("option");
+        option.value = l.replace("\.json", "");
+        blockSuggestions.appendChild(option);
+    })
+})
 
 
 //TODO: include this in renderer constructor

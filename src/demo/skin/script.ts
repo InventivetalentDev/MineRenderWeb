@@ -38,10 +38,9 @@ renderer.scene.addSkin().then(skinObject_ => {
 
     setSkin("inventivetalent");
 
-    loadGUI();
 
     // dummy intersection
-    const intersection: Intersection ={
+    const intersection: Intersection = {
         object: skinObject_,
         distance: 0,
         point: new Vector3(),
@@ -51,57 +50,25 @@ renderer.scene.addSkin().then(skinObject_ => {
 });
 
 function setSkin(skin: string) {
-    console.log("setting skin to", skin)
-    Skins.fromUsername(skin).then(skin => {
-        console.log(skin);
-        if (typeof skin !== "undefined") {
-            skinObject.setSkinTexture(skin)
-        }
-    })
+    console.log("setting skin to", skin);
+    if (skin.startsWith("http")) {
+        skinObject.setSkinTexture(skin)
+    } else {
+        Skins.fromUuidOrUsername(skin).then(skin => {
+            console.log(skin);
+            if (typeof skin !== "undefined") {
+                skinObject.setSkinTexture(skin)
+            }
+        })
+    }
 }
 
 window["setSkin"] = setSkin;
 
-function loadGUI() {
-    const gui = new GUI()
-
-    {
-        const textureFolder = gui.addFolder("Textures");
-        textureFolder.open();
-        {
-            const skinProps = {
-                user: "inventivetalent",
-                url: ""
-            };
-
-            const userController = textureFolder.add(skinProps, 'user');
-            userController.setValue('inventivetalent');
-            userController.onChange(v => {
-                if (v.length > 0) {
-                    setSkin(v);
-                }
-            });
-
-            const urlController = textureFolder.add(skinProps, 'url');
-            urlController.onChange(v => {
-                if (v.length > 0) {
-                    skinObject.setSkinTexture(v);
-                }
-            });
-        }
-
-        // const positionFolder = gui.addFolder("Position");
-        // {
-        //     positionFolder.add(skinObject.position, 'x', -100, 100, 1);
-        //     positionFolder.add(skinObject.position, 'y', -100, 100, 1);
-        //     positionFolder.add(skinObject.position, 'z', -100, 100, 1);
-        // }
-    }
-
-}
-
-
-
+const skinInput = document.getElementById("skin-input") as HTMLInputElement;
+skinInput.addEventListener("change", () => {
+    setSkin(skinInput.value);
+})
 
 
 //TODO: include this in renderer constructor
