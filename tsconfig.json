@@ -1,5 +1,4 @@
 {
-  "extends": "../tsconfig.json",
   "compilerOptions": {
     "sourceRoot": ".",
     "baseUrl": ".",
@@ -8,9 +7,8 @@
     "target": "ES2018",
     "esModuleInterop": true
   },
-  "include": ["."],
+  "include": ["src"],
   "exclude": [
-    "src",
     "node_modules"
   ]
 }

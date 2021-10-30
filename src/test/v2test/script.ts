@@ -64,9 +64,13 @@ setInterval(() => {
     info["renderCalls"] = renderer.renderer.info.render.calls;
 }, 1000);
 
+// AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/PureBDcraft%20%2064x%20MC117";
+// AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/PureBDcraft%20256x%20MC117";
+// AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/Faithful%201.17";
+AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/1ba97bbe360a6a25c386dead20f05e5562ad1257-game";
 
 async function createModel(type, name, instances = 1, x = 0, y = 0, z = 0) {
-    return Models.getMerged(new AssetKey("minecraft", name, "models", type)).then(model => {
+    return Models.getMerged(new AssetKey("minecraft", name, "models", type, "assets")).then(model => {
         console.log(model)
         return renderer.scene.addModel(model!, {
             mergeMeshes: true,
@@ -130,7 +134,7 @@ function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
 //     await createModel("block", "acacia_log", 1, 32, 32, 16)
 //     await createModel("block", "acacia_log", 1, 32, 32, 16)
 // })();
-// createModel("item", "wooden_sword")
+createModel("item", "stone");
 
 const world = new MineRenderWorld(renderer.scene);
 window["world"] = world;
@@ -176,12 +180,13 @@ world.setBlockAt(0, 0, 0, {
 })
  */
 
-
 const structureAsset = new AssetKey("minecraft", "end_city/ship", "structures", undefined, "data", ".nbt");
 // const structureAsset = new AssetKey("minecraft", "pillager_outpost/watchtower", "structures", undefined, "data", ".nbt");
 // const structureAsset = new AssetKey(undefined, "all_blocks_16", undefined, undefined, undefined, ".nbt", "https://corsfiles.inventivetalent.dev")
 // const structureAsset = new AssetKey(undefined, "world_test", undefined, undefined, undefined, ".nbt", "https://corsfiles.inventivetalent.dev")
 
+
+/*
 AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset => {
     console.log(asset);
     return StructureParser.parse(asset).then(async structure => {
@@ -190,6 +195,10 @@ AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset 
     });
 })
     .catch(err => console.log(err));
+ */
+
+// renderer.scene.addSkin("https://i.imgur.com/lmoTpEB.png")
+
 
 /*
 AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset => {
@@ -311,7 +320,7 @@ BlockStates.getList().then(blockList_ => {
 // })
 
 /*
-BlockStates.get(new AssetKey("minecraft", "magma_block", "blockstates", undefined, "assets", ".json")).then(blockState=>{
+BlockStates.get(new AssetKey("minecraft", "stone", "blockstates", undefined, "assets", ".json")).then(blockState=>{
     renderer.scene.addBlock(blockState).then(block=>{
 
     })
@@ -319,31 +328,7 @@ BlockStates.get(new AssetKey("minecraft", "magma_block", "blockstates", undefine
 
  */
 
-/*
-Models.getMerged(new AssetKey("minecraft", "magma_block", "blocks", undefined, "assets", ".json")).then(model => {
-    const instanceCount = 10;
 
-    console.log(model)
-    let obj = new ModelObject(model, {
-        mergeMeshes: true,
-        instanceMeshes: true,
-        wireframe: true,
-        maxInstanceCount: instanceCount
-    });
-    renderer.scene.initAndAdd(obj);
-    incStat("modelCount")
-
-    //TODO: add event for finished mesh loading or set isInstanced sooner
-    setTimeout(() => {
-        for (let i = 0; i < instanceCount; i++) {
-            let n = obj.nextInstance();
-            n.setPosition(new THREE.Vector3(getRandomInt(-16, 16) * 16, getRandomInt(-16, 16) * 16, getRandomInt(-16, 16) * 16))
-        }
-    }, 2000);
-
-    console.log("Time to scene add: " + (Date.now() - start) + "ms");
-});
- */
 
 // let skinObj = new MineRender.SkinObject();
 // skinObj.setSkinTexture("https://crafatar.com/skins/bcd2033c63ec4bf88aca680b22461340?overlay");
