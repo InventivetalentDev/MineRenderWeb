@@ -38,6 +38,7 @@ function setBlock(block: string) {
     console.log("setting block to", block)
 
     if (typeof blockObject !== "undefined") {
+        blockObject.removeFromScene();
         blockObject.disposeAndRemoveAllChildren();
         renderer.scene.remove(blockObject);
         blockObject = undefined;
