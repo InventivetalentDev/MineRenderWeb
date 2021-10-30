@@ -48,6 +48,7 @@ function setBlock(block: string) {
         return renderer.scene.addBlock(blockState);
     }).then(blockObject_ => {
         blockObject = blockObject_ as BlockObject; //TODO
+        window["block"] = blockObject;
 
         // dummy intersection
         const intersection: Intersection = {

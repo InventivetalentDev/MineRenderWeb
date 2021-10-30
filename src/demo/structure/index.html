@@ -1,0 +1,26 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;400;500;600&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="../../demo_shared.css">
+    </head>
+    <body>
+        <div id="input" class="overlay top-right">
+            <label for="structure-input">Structure</label><br/>
+            <input type="text" id="structure-input" value="end_city/base_floor" list="structure-suggestions">
+            <datalist id="structure-suggestions"></datalist>
+        </div>
+        <div id="inspector" class="overlay bottom-right"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.min.js" integrity="sha512-XI02ivhfmEfnk8CEEnJ92ZS6hOqWoWMKF6pxF/tC/DXBVxDXgs2Kmlc9CHA0Aw2dX03nrr8vF54Z6Mqlkuabkw==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js" integrity="sha512-mfOs9z5Hk96xJH71l0ptzjgGvflNJRnHA7brsEwqDZf7mJa8QDfUtcHICKMXq4Ys80g5HKQMD9rsY3R44ZlEug==" crossorigin="anonymous"></script>
+
+        <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/js/controls/OrbitControls.js"></script>
+
+        <script src="../../../../MineRender/dist/bundle.js"></script><!--TODO-->
+        <script src="script.bundle.js"></script>
+    </body>
+</html>
