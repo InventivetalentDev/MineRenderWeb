@@ -1,6 +1,4 @@
 import { Renderer, SceneInspector, SkinObject, Skins } from "minerender";
-import * as THREE from "three";
-import { GUI } from "dat.gui";
 import { Intersection, Vector3 } from "three";
 
 console.log("hi");

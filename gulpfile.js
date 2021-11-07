@@ -26,11 +26,13 @@ function bundle(done, watch) {
                     debug: true
                 }
             ))
-                .plugin(tsify, {target: 'es6', project: 'tsconfig.json'})
+                .plugin(tsify, {
+                    project: 'tsconfig.json'
+                })
                 .transform(babelify, {
                     extensions: ['.tsc', '.ts', '.js'],
                     sourceMaps: true,
-
+                    plugins: ['@babel/plugin-transform-modules-commonjs']
                 })
             bundler.on('log', l => console.log(l));
 
