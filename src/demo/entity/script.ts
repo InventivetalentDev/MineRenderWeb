@@ -42,10 +42,16 @@ function setEntity(entity: string) {
         entityObject = undefined;
     }
 
-    //TODO: block entity
-    Entities.getEntity(AssetKey.parse("entities", entity)).then(entityModel=>{
+    const key = AssetKey.parse("entities", entity);
+    Entities.getEntity(key).then(entityModel => {
+        if (typeof entityModel !== "undefined" && typeof entityModel.parts !== "undefined") {
+            return entityModel;
+        }
+        return Entities.getBlock(key)
+    }).then(entityModel => {
+        console.log(entityModel)
         return renderer.scene.addEntity(entityModel);
-    }).then(entityObject_=>{
+    }).then(entityObject_ => {
         entityObject = entityObject_ as EntityObject;//TODO
         window["entity"] = entityObject;
 
@@ -67,8 +73,14 @@ entityInput.addEventListener("change", () => {
     setEntity(entityInput.value);
 })
 const entitySuggestions = document.getElementById("entity-suggestions") as HTMLDataListElement;
-//TODO: block entities
 Entities.getEntityList().then(list => {
+    list.forEach(l => {
+        const option = document.createElement("option");
+        option.value = l;
+        entitySuggestions.appendChild(option);
+    })
+})
+Entities.getBlockList().then(list => {
     list.forEach(l => {
         const option = document.createElement("option");
         option.value = l;
