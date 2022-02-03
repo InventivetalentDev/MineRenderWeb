@@ -12,9 +12,9 @@
     ]
   },
   "browserify-shim": {
+    "three": "global:THREE",
     "canvas": "global:canvas",
-    "minerender": "global:MineRender",
-    "three/examples/jsm/controls/OrbitControls": "global:three/examples/jsm/controls/OrbitControls"
+    "minerender": "global:MineRender"
   },
   "author": "Haylee Schäfer",
   "license": "MIT",

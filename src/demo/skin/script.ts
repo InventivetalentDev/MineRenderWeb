@@ -1,5 +1,6 @@
 import { Renderer, SceneInspector, SkinObject, Skins } from "minerender";
 import { Intersection, Vector3 } from "three";
+import 'three/examples/js/controls/OrbitControls';
 
 console.log("hi");
 
@@ -22,7 +23,7 @@ const renderer = new Renderer({
         axes: true
     }
 });
-document.body.appendChild(renderer.renderer.domElement);
+// document.body.appendChild(renderer.renderer.domElement);
 window["renderer"] = renderer;
 
 const sceneInspector = new SceneInspector(renderer);

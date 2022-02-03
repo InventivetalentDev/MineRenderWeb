@@ -1,4 +1,5 @@
 import { AssetKey, AssetLoader, BatchedExecutor, BlockObject, BlockStates, MineRenderWorld, Renderer, SceneInspector, SkinObject, Skins, StructureParser } from "minerender";
+import 'three/examples/js/controls/OrbitControls';
 
 console.log("hi");
 
@@ -14,14 +15,14 @@ const renderer = new Renderer({
         antialias: false
     },
     composer: {
-        enabled: true
+        enabled: false
     },
     debug: {
         grid: true,
         axes: true
     }
 });
-document.body.appendChild(renderer.renderer.domElement);
+// document.body.appendChild(renderer.renderer.domElement);
 window["renderer"] = renderer;
 
 const sceneInspector = new SceneInspector(renderer);
@@ -32,7 +33,7 @@ let world = new MineRenderWorld(renderer.scene);
 window["world"] = world;
 
 setTimeout(()=>{
-    setStructure("end_city/base_floor")
+    setStructure("end_city/ship")
 },10)
 
 async function setStructure(structure: string) {

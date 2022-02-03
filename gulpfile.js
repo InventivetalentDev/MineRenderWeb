@@ -37,16 +37,18 @@ function bundle(done, watch) {
             bundler.on('log', l => console.log(l));
 
             bundler.on('error', function (error) {
+                console.error("bundler error (1) in " + file);
                 console.error(error);
             });
 
             function rebundle() {
-                console.log("bundling...")
-                console.time("bundle")
+                console.log("bundling " + file + "...");
+                console.time("bundle-" + file);
                 return bundler
 
                     .bundle()
                     .on('error', function (error) {
+                        console.error("bundler error (2) in " + file);
                         console.error(error);
                     })
 
@@ -60,7 +62,7 @@ function bundle(done, watch) {
                     .pipe(gulp.dest('.'))
 
                     .on('end', function () {
-                        console.timeEnd("bundle");
+                        console.timeEnd("bundle-" + file);
                         console.log("bundle done!")
                     });
             }
