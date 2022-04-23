@@ -12,7 +12,7 @@ const renderer = new Renderer({
     render: {
         stats: true,
         fpsLimit: 60,
-        antialias: false
+        antialias: true
     },
     composer: {
         enabled: false
@@ -89,7 +89,10 @@ setTimeout(() => {
 //TODO: include this in renderer constructor
 // @ts-ignore meh.
 const controls = new THREE.OrbitControls(renderer.camera, renderer.renderer.domElement);
+renderer.registerEventDispatcher(controls);
 controls.update();
+
+
 
 //TODO: autostart option, maybe
 renderer.start();
