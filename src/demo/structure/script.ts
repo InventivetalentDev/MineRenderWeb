@@ -36,22 +36,29 @@ setTimeout(()=>{
     setStructure("end_city/ship")
 },10)
 
-async function setStructure(structure: string) {
+async function setStructure(structureName: string) {
     structureInput.disabled = true;
-    console.log("setting structure to", structure);
+    console.log("setting structure to", structureName);
 
     await world.clear();
 
-    const structureAsset = new AssetKey("minecraft", structure, "structures", undefined, "data", ".nbt");
-    AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset => {
-        console.log(asset);
-        return StructureParser.parse(asset).then(async structure => {
-            console.log(structure)
-            await world.placeMultiBlock(structure, true, new BatchedExecutor(1, 32));
-            console.log("done placing structure!")
-            structureInput.disabled = false;
-        });
-    })
+   try{
+       const structureAsset = new AssetKey("minecraft", structureName, "structures", undefined, "data", ".nbt");
+
+       const asset = await AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT);
+       console.log(asset);
+
+       const structure = await StructureParser.parse(asset);
+       console.log(structure)
+
+       await world.placeMultiBlock(structure, true, new BatchedExecutor(1, 32));
+       console.log("done placing structure!")
+
+       structureInput.disabled = false;
+   }catch (e){
+       console.error(e);
+       structureInput.disabled = false;
+   }
 }
 
 
