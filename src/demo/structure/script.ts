@@ -75,11 +75,8 @@ setInterval(() => {
 }, 1000);
 
 setTimeout(()=>{
-    //TODO: ship tanks fps when done loading, igloo stays at 60fps
-    // complex models?
-
-    // setStructure("end_city/ship")
-    setStructure("igloo/bottom");
+    setStructure("end_city/ship")
+    // setStructure("igloo/bottom");
 },10)
 
 async function setStructure(structureName: string) {
