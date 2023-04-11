@@ -1,4 +1,17 @@
-import { AssetKey, AssetLoader, BatchedExecutor, BlockObject, BlockStates, MineRenderWorld, Renderer, SceneInspector, SkinObject, Skins, StructureParser } from "minerender";
+import {
+    AssetKey,
+    AssetLoader,
+    BatchedExecutor,
+    BlockObject,
+    BlockStates,
+    MineRenderWorld,
+    Renderer,
+    SceneInspector,
+    SkinObject,
+    Skins,
+    StructureParser,
+    Ticker
+} from "minerender";
 import 'three/examples/js/controls/OrbitControls';
 
 console.log("hi");
@@ -11,19 +24,28 @@ const renderer = new Renderer({
     },
     render: {
         stats: true,
-        fpsLimit: 60,
+        fpsLimit: 0,
         antialias: true
     },
     composer: {
         enabled: false
     },
     debug: {
-        grid: true,
-        axes: true
+        grid: false,
+        axes: false
     }
 });
 // document.body.appendChild(renderer.renderer.domElement);
 window["renderer"] = renderer;
+
+const info = {
+    "objectCount": 0,
+    "sceneObjectCount": 0,
+    "instanceCount": 0,
+    "renderCalls": 0,
+    "1sTps": 0,
+    "5sTps": 0
+}
 
 const sceneInspector = new SceneInspector(renderer);
 sceneInspector.appendTo(document.getElementById('inspector'));
@@ -32,8 +54,32 @@ sceneInspector.appendTo(document.getElementById('inspector'));
 let world = new MineRenderWorld(renderer.scene);
 window["world"] = world;
 
+setInterval(() => {
+    for (let k in info) {
+        document.getElementById(k)!.innerText = "" + info[k];
+    }
+}, 500);
+
+setInterval(() => {
+    info["renderCalls"] = renderer.renderer.info.render.calls;
+}, 1000);
+
+
+setInterval(() => {
+    info["1sTps"] = Ticker.tpsOneSecond;
+    info["5sTps"] = Ticker.tpsFiveSeconds;
+
+    info["objectCount"] = renderer.scene.stats.objectCount;
+    info["sceneObjectCount"] = renderer.scene.stats.sceneObjectCount;
+    info["instanceCount"] = renderer.scene.stats.instanceCount;
+}, 1000);
+
 setTimeout(()=>{
-    setStructure("end_city/ship")
+    //TODO: ship tanks fps when done loading, igloo stays at 60fps
+    // complex models?
+
+    // setStructure("end_city/ship")
+    setStructure("igloo/bottom");
 },10)
 
 async function setStructure(structureName: string) {

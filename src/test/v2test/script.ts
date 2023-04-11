@@ -47,11 +47,15 @@ const renderer = new Renderer({
     },
     render: {
         stats: true,
-        fpsLimit: 60,
+        fpsLimit: 0,
         antialias: false
     },
     composer: {
-        enabled: true
+        enabled: false
+    },
+    debug: {
+        grid: true,
+        axes: true
     }
 });
 document.body.appendChild(renderer.renderer.domElement);
@@ -98,27 +102,33 @@ function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
         .then(blockState => {
             console.log(blockState);
 
-            let obj = new BlockObject(blockState!, {
+            let obj =  renderer.scene.addBlock(blockState!, {
                 mergeMeshes: false,
-                instanceMeshes: false,
+                instanceMeshes: true,
                 wireframe: true,
                 maxInstanceCount: instances + 5
-            });
-            console.log(obj);
-            renderer.scene.initAndAdd(obj).then(() => {
-                // incStat("instanceCount")
-                console.log("added");
-                setTimeout(() => {
-                    if (!obj.isInstanced) return;
-                    for (let i = 0; i < instances; i++) {
-                        let n = obj.nextInstance();
-                        n.setPosition(new Vector3(x, y, z))
-                        // obj.setPositionAt(n.index, new THREE.Vector3(16,64,16));
-                        // obj.setRotationAt(n.index, new THREE.Euler(0,1.5708,0));
-                        // incStat("instanceCount")
-                    }
-                }, 100)
             })
+            // let obj = new BlockObject(blockState!, {
+            //     mergeMeshes: false,
+            //     instanceMeshes: true,
+            //     wireframe: true,
+            //     maxInstanceCount: instances + 5
+            // });
+            console.log(obj);
+            // renderer.scene.initAndAdd(obj).then(() => {
+            //     // incStat("instanceCount")
+            //     console.log("added");
+            //     setTimeout(() => {
+            //         if (!obj.isInstanced) return;
+            //         for (let i = 0; i < instances; i++) {
+            //             let n = obj.nextInstance();
+            //             n.setPosition(new Vector3(x, y, z))
+            //             // obj.setPositionAt(n.index, new THREE.Vector3(16,64,16));
+            //             // obj.setRotationAt(n.index, new THREE.Euler(0,1.5708,0));
+            //             // incStat("instanceCount")
+            //         }
+            //     }, 100)
+            // })
 
         })
 }
@@ -131,11 +141,15 @@ function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
 //     await createModel("block", "acacia_log", 1, 32, 32, 16)
 //     await createModel("block", "acacia_log", 1, 32, 32, 16)
 // })();
-createModel("item", "stone");
+// createModel("block", "stone");
+
+
 
 const world = new MineRenderWorld(renderer.scene);
 window["world"] = world;
 console.log(world);
+
+
 /*
 for(let i=0;i<100;i++){
     let x = Math.floor(Math.random()*50);
@@ -149,10 +163,14 @@ for(let i=0;i<100;i++){
     })
 
 }
- */
+*/
 
-/*
+
+
+
+
 const executor = new BatchedExecutor(1, 50);
+
 
 world.setBlockAt(0, 0, 0, {
     type: "stone"
@@ -163,19 +181,23 @@ world.setBlockAt(0, 0, 0, {
         for (let x = 0; x < 20; x++) {
             for (let z = 0; z < 20; z++) {
                 for (let y = 0; y < 20; y++) {
-                    executor.submit(() => {
-                        world.setBlockAt(x, y, z, {
-                            type: "stone"
-                        }).then(info => {
-                            console.log(info)
+                    if (Math.random() < 0.2) {
+                        executor.submit(() => {
+                            world.setBlockAt(x, y, z, {
+                                type: "stone"
+                            }).then(info => {
+                                console.log(info)
+                            })
                         })
-                    })
+                    }
                 }
             }
         }
     }, 5000)
 })
- */
+
+
+
 
 const structureAsset = new AssetKey("minecraft", "end_city/ship", "structures", undefined, "data", ".nbt");
 // const structureAsset = new AssetKey("minecraft", "pillager_outpost/watchtower", "structures", undefined, "data", ".nbt");
@@ -237,10 +259,10 @@ AssetLoader.loadOrRetryWithDefaults(structureAsset, AssetLoader.NBT).then(asset 
  */
 
 
-/*
+
 BlockStates.getList().then(blockList_ => {
     const blockList = [...blockList_];
-    const a = 0;
+    const a = 10;
     let c = 0
     for (let x = 0; x < a; x++) {
         for (let y = 0; y < a; y++) {
@@ -252,7 +274,15 @@ BlockStates.getList().then(blockList_ => {
             ((xc, yc, blockName) => {
                 setTimeout(() => {
 
-                    createBlockState(blockName, 1, xc * 16, 16, yc * 16)
+                    // createBlockState(blockName, 1, xc * 16, 16, yc * 16)
+
+                    executor.submit(() => {
+                        world.setBlockAt(xc, 0, yc, {
+                            type: blockName
+                        }).then(info => {
+                            console.log(info)
+                        })
+                    })
                 }, c * 5)
             })(x, y, blockName);
 
@@ -261,7 +291,7 @@ BlockStates.getList().then(blockList_ => {
     console.log(blockList)
 })
 
- */
+
 
 // MineRender.Entities.getEntity(new MineRender.BasicAssetKey("minecraft", "armor_stand"), new MineRender.BasicAssetKey("minecraft","armorstand/wood")).then(model => {
 //     let obj = new MineRender.EntityObject(model, {
@@ -412,6 +442,7 @@ BlockStates.get(new AssetKey("minecraft", "stone", "blockstates", undefined, "as
 //     renderer.scene.clear();
 // }, 2000);
 
+/*
 {
     const gridHelper = new GridHelper(128, 16);
     renderer.scene.add(gridHelper);
@@ -481,10 +512,16 @@ renderer.camera.lookAt(new Vector3(0, 0, 0))
     // renderer.scene.add(new PointLightHelper(pointLight, 1))
 }
 
+ */
+
 
 // @ts-ignore meh.
 const controls = new THREE.OrbitControls(renderer.camera, renderer.renderer.domElement);
+renderer.registerEventDispatcher(controls);
 controls.update();
+
+renderer.start();
+
 
 const inspector = new SceneInspector(renderer);
 document.getElementById('rayinfo')!.append(inspector.objectInfoContainer);
@@ -526,7 +563,6 @@ document.getElementById('rayinfo')!.append(inspector.objectControlsContainer);
 // })
 
 
-renderer.start();
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);

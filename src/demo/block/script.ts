@@ -12,11 +12,11 @@ const renderer = new Renderer({
     },
     render: {
         stats: true,
-        fpsLimit: 60,
+        fpsLimit: 0,
         antialias: false
     },
     composer: {
-        enabled: true
+        enabled: false
     },
     debug: {
         grid: true,
@@ -44,7 +44,9 @@ function setBlock(block: string) {
     }
 
     BlockStates.get(AssetKey.parse("blockstates", block)).then(blockState => {
-        return renderer.scene.addBlock(blockState);
+        return renderer.scene.addBlock(blockState,{
+            wireframe: true
+        });
     }).then(blockObject_ => {
         blockObject = blockObject_ as BlockObject; //TODO
         window["block"] = blockObject;
@@ -79,7 +81,10 @@ BlockStates.getList().then(list => {
 //TODO: include this in renderer constructor
 // @ts-ignore meh.
 const controls = new THREE.OrbitControls(renderer.camera, renderer.renderer.domElement);
+renderer.registerEventDispatcher(controls);
 controls.update();
+
+
 
 //TODO: autostart option, maybe
 renderer.start();
