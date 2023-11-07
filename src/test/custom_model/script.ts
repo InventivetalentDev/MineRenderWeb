@@ -1,5 +1,29 @@
-import { AssetKey, AssetLoader, BlockObject, BlockStates, Models, Renderer, SceneInspector, MineRenderWorld, BatchedExecutor, Ticker } from "minerender";
-import { AmbientLight, AxesHelper, DirectionalLight, DirectionalLightHelper, Euler, GridHelper, HemisphereLight, HemisphereLightHelper, PointLight, PointLightHelper, sRGBEncoding, Vector3 } from "three";
+import {
+    AssetKey,
+    AssetLoader,
+    BlockObject,
+    BlockStates,
+    Models,
+    Renderer,
+    SceneInspector,
+    MineRenderWorld,
+    BatchedExecutor,
+    Ticker
+} from "minerender";
+import {
+    AmbientLight,
+    AxesHelper,
+    DirectionalLight,
+    DirectionalLightHelper,
+    Euler,
+    GridHelper,
+    HemisphereLight,
+    HemisphereLightHelper,
+    PointLight,
+    PointLightHelper,
+    sRGBEncoding,
+    Vector3
+} from "three";
 import 'three/examples/js/controls/OrbitControls';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -69,7 +93,7 @@ setInterval(() => {
 // AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/PureBDcraft%20%2064x%20MC117";
 // AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/PureBDcraft%20256x%20MC117";
 // AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/Faithful%201.17";
-AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/internal/idk/";
+AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/internal/blockbench";
 
 async function createModel(type, name, instances = 1, x = 0, y = 0, z = 0) {
     return Models.getMerged(new AssetKey("minecraft", name, "models", type, "assets")).then(model => {
@@ -83,6 +107,7 @@ async function createModel(type, name, instances = 1, x = 0, y = 0, z = 0) {
                 maxInstanceCount: instances
             })
         ]).then(([skin, model]) => {
+            model.setPosition(new Vector3(0, 16 * 2.5, 0))
         })
         // let obj = new MineRender.ModelObject(model, {
         //     mergeMeshes: true,
@@ -103,7 +128,7 @@ async function createModel(type, name, instances = 1, x = 0, y = 0, z = 0) {
 }
 
 
-createModel("item", "sunglasses_blue");
+createModel("item", "blockbench-test");
 
 // @ts-ignore meh.
 const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement);
@@ -116,8 +141,6 @@ renderer.start();
 const inspector = new SceneInspector(renderer);
 document.getElementById('rayinfo')!.append(inspector.objectInfoContainer);
 document.getElementById('rayinfo')!.append(inspector.objectControlsContainer);
-
-
 
 
 function getRandomInt(min, max) {
@@ -139,7 +162,7 @@ function getRandomSpherePoint() {
     let x = r * sinPhi * cosTheta;
     let y = r * sinPhi * sinTheta;
     let z = r * cosPhi;
-    return { x: x, y: y, z: z };
+    return {x: x, y: y, z: z};
 }
 
 
