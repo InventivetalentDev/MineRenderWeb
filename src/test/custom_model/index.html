@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="../../demo_shared.css">
+        <style>
+            #info {
+                z-index: 100;
+                position: absolute;
+                top: 0;
+                right: 0;
+                background-color: hsla(0, 0%, 59%, 0.5);
+                width: 80px;
+                height: 100px;
+                padding: 5px;
+                color: white;
+                text-shadow: 0 0 4px black;
+                font-size: 12px;
+            }
+
+            #rayinfo {
+                z-index: 100;
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                background-color: hsla(0, 0%, 59%, 0.5);
+                width: 300px;
+                height: 500px;
+                padding: 5px;
+                color: white;
+                text-shadow: 0 0 4px black;
+                font-size: 12px;
+                overflow: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="info">
+            <span>OC <span id="objectCount" title="objectCount">0</span></span><br/>
+            <span>SOC <span id="sceneObjectCount" title="sceneObjectCount">0</span></span><br/>
+            <span>IC <span id="instanceCount" title="instanceCount">0</span></span><br/>
+            <br/>
+            <span>RC <span id="renderCalls" title="renderCalls">0</span></span><br/>
+            <br/>
+            <span>TPS <span id="1sTps" title="1sTps">20</span>/<span id="5sTps" title="5sTps">20</span></span><br/>
+        </div>
+        <div id="rayinfo">
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.min.js" integrity="sha512-XI02ivhfmEfnk8CEEnJ92ZS6hOqWoWMKF6pxF/tC/DXBVxDXgs2Kmlc9CHA0Aw2dX03nrr8vF54Z6Mqlkuabkw==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js" integrity="sha512-mfOs9z5Hk96xJH71l0ptzjgGvflNJRnHA7brsEwqDZf7mJa8QDfUtcHICKMXq4Ys80g5HKQMD9rsY3R44ZlEug==" crossorigin="anonymous"></script>
+
+
+
+        <script>
+            (function () {
+                var script = document.createElement('script');
+                script.onload = function () {
+                    var stats = new Stats();
+                    document.body.appendChild(stats.dom);
+                    requestAnimationFrame(function loop() {
+                        stats.update();
+                        requestAnimationFrame(loop)
+                    });
+                };
+                script.src = 'https://unpkg.com/stats.js/build/stats.min.js';
+                document.head.appendChild(script);
+            })()
+        </script>
+
+        <!--        <script>-->
+        <!--            navigator.serviceWorker.register('./serviceworker.js', {-->
+        <!--                scope: '.'-->
+        <!--            }).then(function(registration) {-->
+        <!--                console.log('The service worker has been registered ', registration);-->
+        <!--            });-->
+        <!--        </script>-->
+
+        <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/examples/js/controls/OrbitControls.js"></script>
+
+        <script src="../../../../MineRender2/dist/bundle.js"></script><!--TODO-->
+        <script src="script.bundle.js"></script>
+    </body>
+</html>

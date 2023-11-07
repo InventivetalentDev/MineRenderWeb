@@ -1,6 +1,7 @@
 import { AssetKey, AssetLoader, BlockObject, BlockStates, Models, Renderer, SceneInspector, MineRenderWorld, BatchedExecutor, Ticker } from "minerender";
 import { AmbientLight, AxesHelper, DirectionalLight, DirectionalLightHelper, Euler, GridHelper, HemisphereLight, HemisphereLightHelper, PointLight, PointLightHelper, sRGBEncoding, Vector3 } from "three";
 import 'three/examples/js/controls/OrbitControls';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 
 console.log("hi")
@@ -516,7 +517,7 @@ renderer.camera.lookAt(new Vector3(0, 0, 0))
 
 
 // @ts-ignore meh.
-const controls = new THREE.OrbitControls(renderer.camera, renderer.renderer.domElement);
+const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement);
 renderer.registerEventDispatcher(controls);
 controls.update();
 

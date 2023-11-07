@@ -1,6 +1,7 @@
 import { AssetKey, BlockObject, BlockStates, Renderer, SceneInspector, SkinObject, Skins } from "minerender";
 import { Intersection, Vector3 } from "three";
 import 'three/examples/js/controls/OrbitControls';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 console.log("hi");
 
@@ -80,7 +81,7 @@ BlockStates.getList().then(list => {
 
 //TODO: include this in renderer constructor
 // @ts-ignore meh.
-const controls = new THREE.OrbitControls(renderer.camera, renderer.renderer.domElement);
+const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement);
 renderer.registerEventDispatcher(controls);
 controls.update();
 

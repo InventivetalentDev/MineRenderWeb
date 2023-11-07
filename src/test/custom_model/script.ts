@@ -69,16 +69,20 @@ setInterval(() => {
 // AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/PureBDcraft%20%2064x%20MC117";
 // AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/PureBDcraft%20256x%20MC117";
 // AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/Faithful%201.17";
-AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/resourcepacks/1ba97bbe360a6a25c386dead20f05e5562ad1257-game";
+AssetLoader.ROOT = "https://corsfiles.inventivetalent.dev/internal/idk/";
 
 async function createModel(type, name, instances = 1, x = 0, y = 0, z = 0) {
     return Models.getMerged(new AssetKey("minecraft", name, "models", type, "assets")).then(model => {
         console.log(model)
-        return renderer.scene.addModel(model!, {
-            mergeMeshes: true,
-            instanceMeshes: true,
-            wireframe: true,
-            maxInstanceCount: instances
+        return Promise.all([
+            renderer.scene.addSkin("http://textures.minecraft.net/texture/fb5f93b1ccebf7b385fa488c6d4cfec87cf1b855f8dbe0308da44167cae170b"),
+            renderer.scene.addModel(model!, {
+                mergeMeshes: true,
+                instanceMeshes: true,
+                wireframe: true,
+                maxInstanceCount: instances
+            })
+        ]).then(([skin, model]) => {
         })
         // let obj = new MineRender.ModelObject(model, {
         //     mergeMeshes: true,
@@ -98,95 +102,8 @@ async function createModel(type, name, instances = 1, x = 0, y = 0, z = 0) {
     });
 }
 
-function createBlockState(name, instances = 1, x = 0, y = 0, z = 0) {
-    BlockStates.get(new AssetKey("minecraft", name, "blockstates", undefined, ".json"))
-        .then(blockState => {
-            console.log(blockState);
 
-            let obj =  renderer.scene.addBlock(blockState!, {
-                mergeMeshes: false,
-                instanceMeshes: true,
-                wireframe: true,
-                maxInstanceCount: instances + 5
-            })
-            // let obj = new BlockObject(blockState!, {
-            //     mergeMeshes: false,
-            //     instanceMeshes: true,
-            //     wireframe: true,
-            //     maxInstanceCount: instances + 5
-            // });
-            console.log(obj);
-            // renderer.scene.initAndAdd(obj).then(() => {
-            //     // incStat("instanceCount")
-            //     console.log("added");
-            //     setTimeout(() => {
-            //         if (!obj.isInstanced) return;
-            //         for (let i = 0; i < instances; i++) {
-            //             let n = obj.nextInstance();
-            //             n.setPosition(new Vector3(x, y, z))
-            //             // obj.setPositionAt(n.index, new THREE.Vector3(16,64,16));
-            //             // obj.setRotationAt(n.index, new THREE.Euler(0,1.5708,0));
-            //             // incStat("instanceCount")
-            //         }
-            //     }, 100)
-            // })
-
-        })
-}
-
-//TODO: fire in wrong position, rescale thingy maybe?
-// createBlockState("campfire",5);
-// createBlockState("glass",1,0,16,0);
-// (async () => {
-//     await createModel("block", "acacia_log", 1, 32, 32, 32)
-//     await createModel("block", "acacia_log", 1, 32, 32, 16)
-//     await createModel("block", "acacia_log", 1, 32, 32, 16)
-// })();
-// createModel("block", "stone");
-
-
-
-const world = new MineRenderWorld(renderer.scene);
-window["world"] = world;
-console.log(world);
-
-
-
-
-
-
-
-const executor = new BatchedExecutor(1, 50);
-
-
-world.setBlockAt(0, 0, 0, {
-    type: "stone"
-}).then(info => {
-    console.log(info)
-
-    setTimeout(() => {
-        for (let x = 0; x < 20; x++) {
-            for (let z = 0; z < 20; z++) {
-                for (let y = 0; y < 20; y++) {
-                    if (Math.random() < 0.2) {
-                        executor.submit(() => {
-                            world.setBlockAt(x, y, z, {
-                                type: "stone"
-                            }).then(info => {
-                                console.log(info)
-                            })
-                        })
-                    }
-                }
-            }
-        }
-    }, 5000)
-})
-
-
-
-
-
+createModel("item", "sunglasses_blue");
 
 // @ts-ignore meh.
 const controls = new OrbitControls(renderer.camera, renderer.renderer.domElement);
